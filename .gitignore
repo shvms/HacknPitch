@@ -1,2 +1,4 @@
 .idea/
 venv/
+hacknpitch/db.sqlite3
+hacknpitch/*/__pycache__/
