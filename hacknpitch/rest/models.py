@@ -12,6 +12,11 @@ class BloodGroup(Enum):
   O_P = "O+"
   O_N = "O-"
 
+class Request_Status(Enum):
+  PENDING = 'P'
+  CONFIRM = 'C'
+  REJECT = 'R'
+  
 # Create your models here.
 class Hospital(models.Model):
   name = models.CharField(max_length=100)
@@ -23,13 +28,15 @@ class Hospital(models.Model):
 class User(models.Model):
   email = models.EmailField(primary_key=True)
   name = models.CharField(max_length=100)
+  dob = models.DateField()
   address = models.CharField(max_length=250)
   blood_group = models.CharField(
-    max_length=2,
+    max_length=3,
     choices=[(tag, tag.value) for tag in BloodGroup]
   )
+  password = models.CharField(max_length=50)
   created_at = models.DateTimeField(auto_now_add=True)
-  admitted_at = models.ForeignKey(Hospital, on_delete=models.CASCADE)
+  # admitted_at = models.ForeignKey(Hospital, on_delete=models.CASCADE)
 
 class BloodBank(models.Model):
   name = models.CharField(max_length=100)
@@ -77,3 +84,25 @@ class O_N(models.Model):
   blood_bank = models.ForeignKey(BloodBank, on_delete=models.CASCADE)
   stock = models.IntegerField()
   last_updated = models.DateTimeField(auto_now=True)
+
+class Request(models.Model):
+  user = models.ForeignKey(User,on_delete=models.CASCADE)
+  hospital = models.ForeignKey(Hospital, on_delete=models.CASCADE)
+  status = models.CharField(
+    max_length=1,
+    choices=[(tag, tag.value) for tag in Request_Status]
+  )
+  blood_required = models.CharField(
+    max_length=3,
+    choices=[(tag, tag.value) for tag in BloodGroup]
+  )
+  created_at = models.DateTimeField(auto_now_add=True)
+
+class Volunteer(models.Model):
+  name = models.CharField(max_length=100)
+  dob = models.DateField()
+  blood_group = models.CharField(
+    max_length=3,
+    choices=[(tag, tag.value) for tag in BloodGroup]
+  )
+  address = models.CharField(max_length=250)
